@@ -9,10 +9,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/init-declarations"),
+const rule = require("../../../lib/rules/init-declarations"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("init-declarations", rule, {
     valid: [

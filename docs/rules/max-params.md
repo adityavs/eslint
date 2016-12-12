@@ -1,4 +1,4 @@
-# enforce a maximum number of parameters in `function` definitions (max-params)
+# enforce a maximum number of parameters in function definitions (max-params)
 
 Functions that take numerous parameters can be difficult to read and write because it requires the memorization of what each parameter is, its type, and the order they should appear in. As a result, many coders adhere to a convention that caps the number of parameters a function can take.
 
@@ -37,7 +37,7 @@ let foo = (bar, baz, qux, qxx) => {
 };
 ```
 
-Examples of **correct** code for this rule with the default `{ "max": 4 }` option:
+Examples of **correct** code for this rule with the default `{ "max": 3 }` option:
 
 ```js
 /*eslint max-params: ["error", 3]*/

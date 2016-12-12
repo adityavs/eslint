@@ -9,14 +9,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-unused-expressions"),
+const rule = require("../../../lib/rules/no-unused-expressions"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("no-unused-expressions", rule, {
     valid: [
@@ -42,6 +42,24 @@ ruleTester.run("no-unused-expressions", rule, {
         {
             code: "function* foo(){ yield 0; }",
             parserOptions: { ecmaVersion: 6 }
+        },
+        {
+            code: "async function foo() { await 5; }",
+            parserOptions: { ecmaVersion: 8 }
+        },
+        {
+            code: "async function foo() { await foo.bar; }",
+            parserOptions: { ecmaVersion: 8 }
+        },
+        {
+            code: "async function foo() { bar && await baz; }",
+            options: [{ allowShortCircuit: true }],
+            parserOptions: { ecmaVersion: 8 }
+        },
+        {
+            code: "async function foo() { foo ? await bar : await baz; }",
+            options: [{ allowTernary: true }],
+            parserOptions: { ecmaVersion: 8 }
         }
     ],
     invalid: [

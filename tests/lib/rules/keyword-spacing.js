@@ -9,15 +9,15 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/keyword-spacing"),
+const rule = require("../../../lib/rules/keyword-spacing"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
 
-var BOTH = {before: true, after: true};
-var NEITHER = {before: false, after: false};
+const BOTH = {before: true, after: true};
+const NEITHER = {before: false, after: false};
 
 /**
  * Creates an option object to test an "overrides" option.
@@ -35,11 +35,11 @@ var NEITHER = {before: false, after: false};
  *     }
  *
  * @param {string} keyword - A keyword to be overriden.
- * @param {object} value - A value to override.
- * @returns {object} An option object to test an "overrides" option.
+ * @param {Object} value - A value to override.
+ * @returns {Object} An option object to test an "overrides" option.
  */
 function override(keyword, value) {
-    var retv = {
+    const retv = {
         before: value.before === false,
         after: value.after === false,
         overrides: {}
@@ -57,7 +57,7 @@ function override(keyword, value) {
  * @returns {string[]} An error message.
  */
 function expectedBefore(keyword) {
-    return ["Expected space(s) before \"" + keyword + "\"."];
+    return [`Expected space(s) before "${keyword}".`];
 }
 
 /**
@@ -67,7 +67,7 @@ function expectedBefore(keyword) {
  * @returns {string[]} An error message.
  */
 function expectedAfter(keyword) {
-    return ["Expected space(s) after \"" + keyword + "\"."];
+    return [`Expected space(s) after "${keyword}".`];
 }
 
 /**
@@ -79,8 +79,8 @@ function expectedAfter(keyword) {
  */
 function expectedBeforeAndAfter(keyword) {
     return [
-        "Expected space(s) before \"" + keyword + "\".",
-        "Expected space(s) after \"" + keyword + "\"."
+        `Expected space(s) before "${keyword}".`,
+        `Expected space(s) after "${keyword}".`
     ];
 }
 
@@ -91,7 +91,7 @@ function expectedBeforeAndAfter(keyword) {
  * @returns {string[]} An error message.
  */
 function unexpectedBefore(keyword) {
-    return ["Unexpected space(s) before \"" + keyword + "\"."];
+    return [`Unexpected space(s) before "${keyword}".`];
 }
 
 /**
@@ -101,7 +101,7 @@ function unexpectedBefore(keyword) {
  * @returns {string[]} An error message.
  */
 function unexpectedAfter(keyword) {
-    return ["Unexpected space(s) after \"" + keyword + "\"."];
+    return [`Unexpected space(s) after "${keyword}".`];
 }
 
 /**
@@ -113,8 +113,8 @@ function unexpectedAfter(keyword) {
  */
 function unexpectedBeforeAndAfter(keyword) {
     return [
-        "Unexpected space(s) before \"" + keyword + "\".",
-        "Unexpected space(s) after \"" + keyword + "\"."
+        `Unexpected space(s) before "${keyword}".`,
+        `Unexpected space(s) after "${keyword}".`
     ];
 }
 
@@ -122,7 +122,7 @@ function unexpectedBeforeAndAfter(keyword) {
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("keyword-spacing", rule, {
     valid: [
@@ -135,6 +135,140 @@ ruleTester.run("keyword-spacing", rule, {
         {code: "import*as a from\"foo\"", options: [NEITHER], parserOptions: {sourceType: "module"}},
         {code: "import* as a from\"foo\"", options: [override("as", BOTH)], parserOptions: {sourceType: "module"}},
         {code: "import *as a from \"foo\"", options: [override("as", NEITHER)], parserOptions: {sourceType: "module"}},
+
+        //----------------------------------------------------------------------
+        // async
+        //----------------------------------------------------------------------
+
+        {code: "{} async function foo() {}", parserOptions: {ecmaVersion: 8}},
+        {code: "{}async function foo() {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "{} async function foo() {}", options: [override("async", BOTH)], parserOptions: {ecmaVersion: 8}},
+        {code: "{}async function foo() {}", options: [override("async", NEITHER)], parserOptions: {ecmaVersion: 8}},
+        {code: "{} async () => {}", parserOptions: {ecmaVersion: 8}},
+        {code: "{}async () => {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "{} async () => {}", options: [override("async", BOTH)], parserOptions: {ecmaVersion: 8}},
+        {code: "{}async () => {}", options: [override("async", NEITHER)], parserOptions: {ecmaVersion: 8}},
+        {code: "({async [b]() {}})", parserOptions: {ecmaVersion: 8}},
+        {code: "({async[b]() {}})", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "({async [b]() {}})", options: [override("async", BOTH)], parserOptions: {ecmaVersion: 8}},
+        {code: "({async[b]() {}})", options: [override("async", NEITHER)], parserOptions: {ecmaVersion: 8}},
+        {code: "class A {a(){} async [b]() {}}", parserOptions: {ecmaVersion: 8}},
+        {code: "class A {a(){}async[b]() {}}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "class A {a(){} async [b]() {}}", options: [override("async", BOTH)], parserOptions: {ecmaVersion: 8}},
+        {code: "class A {a(){}async[b]() {}}", options: [override("async", NEITHER)], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `array-bracket-spacing`
+        {code: "[async function foo() {}]", parserOptions: {ecmaVersion: 8}},
+        {code: "[ async function foo() {}]", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `arrow-spacing`
+        {code: "() =>async function foo() {}", parserOptions: {ecmaVersion: 8}},
+        {code: "() => async function foo() {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `block-spacing`
+        {code: "{async function foo() {} }", parserOptions: {ecmaVersion: 8}},
+        {code: "{ async function foo() {} }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `comma-spacing`
+        {code: "(0,async function foo() {})", parserOptions: {ecmaVersion: 8}},
+        {code: "(0, async function foo() {})", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `computed-property-spacing`
+        {code: "a[async function foo() {}]", parserOptions: {ecmaVersion: 8}},
+        {code: "({[async function foo() {}]: 0})", parserOptions: {ecmaVersion: 8}},
+        {code: "a[ async function foo() {}]", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "({[ async function foo() {}]: 0})", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `key-spacing`
+        {code: "({a:async function foo() {} })", parserOptions: {ecmaVersion: 8}},
+        {code: "({a: async function foo() {} })", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `semi-spacing`
+        {code: ";async function foo() {};", parserOptions: {ecmaVersion: 8}},
+        {code: "; async function foo() {} ;", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-before-function-paren`
+        {code: "async() => {}", parserOptions: {ecmaVersion: 8}},
+        {code: "async () => {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-in-parens`
+        {code: "(async function foo() {})", parserOptions: {ecmaVersion: 8}},
+        {code: "( async function foo() {})", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-infix-ops`
+        {code: "a =async function foo() {}", parserOptions: {ecmaVersion: 8}},
+        {code: "a = async function foo() {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-unary-ops`
+        {code: "!async function foo() {}", parserOptions: {ecmaVersion: 8}},
+        {code: "! async function foo() {}", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `template-curly-spacing`
+        {code: "`${async function foo() {}}`", parserOptions: {ecmaVersion: 8}},
+        {code: "`${ async function foo() {}}`", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `jsx-curly-spacing`
+        {code: "<Foo onClick={async function foo() {}} />", parserOptions: {ecmaVersion: 8, ecmaFeatures: {jsx: true}}},
+        {code: "<Foo onClick={ async function foo() {}} />", options: [NEITHER], parserOptions: {ecmaVersion: 8, ecmaFeatures: {jsx: true}}},
+
+        //----------------------------------------------------------------------
+        // await
+        //----------------------------------------------------------------------
+
+        {code: "async function wrap() { {} await +1 }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { {}await +1 }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { {} await +1 }", options: [override("await", BOTH)], parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { {}await +1 }", options: [override("await", NEITHER)], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `array-bracket-spacing`
+        {code: "async function wrap() { [await a] }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { [ await a] }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `arrow-spacing`
+        {code: "async () =>await a", parserOptions: {ecmaVersion: 8}},
+        {code: "async () => await a", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `block-spacing`
+        {code: "async function wrap() { {await a } }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { { await a } }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `comma-spacing`
+        {code: "async function wrap() { (0,await a) }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { (0, await a) }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `computed-property-spacing`
+        {code: "async function wrap() { a[await a] }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ({[await a]: 0}) }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { a[ await a] }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ({[ await a]: 0}) }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `key-spacing`
+        {code: "async function wrap() { ({a:await a }) }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ({a: await a }) }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `semi-spacing`
+        {code: "async function wrap() { ;await a; }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ; await a ; }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-in-parens`
+        {code: "async function wrap() { (await a) }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ( await a) }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-infix-ops`
+        {code: "async function wrap() { a =await a }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { a = await a }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `space-unary-ops`
+        {code: "async function wrap() { !await'a' }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { ! await 'a' }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `template-curly-spacing`
+        {code: "async function wrap() { `${await a}` }", parserOptions: {ecmaVersion: 8}},
+        {code: "async function wrap() { `${ await a}` }", options: [NEITHER], parserOptions: {ecmaVersion: 8}},
+
+        // not conflict with `jsx-curly-spacing`
+        {code: "async function wrap() { <Foo onClick={await a} /> }", parserOptions: {ecmaVersion: 8, ecmaFeatures: {jsx: true}}},
+        {code: "async function wrap() { <Foo onClick={ await a} /> }", options: [NEITHER], parserOptions: {ecmaVersion: 8, ecmaFeatures: {jsx: true}}},
 
         //----------------------------------------------------------------------
         // break
@@ -819,7 +953,7 @@ ruleTester.run("keyword-spacing", rule, {
         {code: "class A { a() { ({a:super }) } }", parserOptions: {ecmaVersion: 6}},
         {code: "class A { a() { ({a: super }) } }", options: [NEITHER], parserOptions: {ecmaVersion: 6}},
 
-        // not conflict with `no-spaced-func`
+        // not conflict with `func-call-spacing`
         {code: "class A { constructor() { super(); } }", parserOptions: {ecmaVersion: 6}},
         {code: "class A { constructor() { super (); } }", options: [NEITHER], parserOptions: {ecmaVersion: 6}},
 
@@ -1230,6 +1364,151 @@ ruleTester.run("keyword-spacing", rule, {
             errors: unexpectedBefore("as"),
             options: [override("as", NEITHER)],
             parserOptions: {sourceType: "module"}
+        },
+
+        //----------------------------------------------------------------------
+        // async
+        //----------------------------------------------------------------------
+
+        {
+            code: "{}async function foo() {}",
+            output: "{} async function foo() {}",
+            errors: expectedBefore("async"),
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{} async function foo() {}",
+            output: "{}async function foo() {}",
+            errors: unexpectedBefore("async"),
+            options: [NEITHER],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{}async function foo() {}",
+            output: "{} async function foo() {}",
+            errors: expectedBefore("async"),
+            options: [override("async", BOTH)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{} async function foo() {}",
+            output: "{}async function foo() {}",
+            errors: unexpectedBefore("async"),
+            options: [override("async", NEITHER)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{}async () => {}",
+            output: "{} async () => {}",
+            errors: expectedBefore("async"),
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{} async () => {}",
+            output: "{}async () => {}",
+            errors: unexpectedBefore("async"),
+            options: [NEITHER],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{}async () => {}",
+            output: "{} async () => {}",
+            errors: expectedBefore("async"),
+            options: [override("async", BOTH)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "{} async () => {}",
+            output: "{}async () => {}",
+            errors: unexpectedBefore("async"),
+            options: [override("async", NEITHER)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "({async[b]() {}})",
+            output: "({async [b]() {}})",
+            errors: expectedAfter("async"),
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "({async [b]() {}})",
+            output: "({async[b]() {}})",
+            errors: unexpectedAfter("async"),
+            options: [NEITHER],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "({async[b]() {}})",
+            output: "({async [b]() {}})",
+            errors: expectedAfter("async"),
+            options: [override("async", BOTH)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "({async [b]() {}})",
+            output: "({async[b]() {}})",
+            errors: unexpectedAfter("async"),
+            options: [override("async", NEITHER)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "class A {a(){}async[b]() {}}",
+            output: "class A {a(){} async [b]() {}}",
+            errors: expectedBeforeAndAfter("async"),
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "class A {a(){} async [b]() {}}",
+            output: "class A {a(){}async[b]() {}}",
+            errors: unexpectedBeforeAndAfter("async"),
+            options: [NEITHER],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "class A {a(){}async[b]() {}}",
+            output: "class A {a(){} async [b]() {}}",
+            errors: expectedBeforeAndAfter("async"),
+            options: [override("async", BOTH)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "class A {a(){} async [b]() {}}",
+            output: "class A {a(){}async[b]() {}}",
+            errors: unexpectedBeforeAndAfter("async"),
+            options: [override("async", NEITHER)],
+            parserOptions: {ecmaVersion: 8}
+        },
+
+        //----------------------------------------------------------------------
+        // await
+        //----------------------------------------------------------------------
+
+        {
+            code: "async function wrap() { {}await a }",
+            output: "async function wrap() { {} await a }",
+            errors: expectedBefore("await"),
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "async function wrap() { {} await a }",
+            output: "async function wrap() { {}await a }",
+            errors: unexpectedBefore("await"),
+            options: [NEITHER],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "async function wrap() { {}await a }",
+            output: "async function wrap() { {} await a }",
+            errors: expectedBefore("await"),
+            options: [override("await", BOTH)],
+            parserOptions: {ecmaVersion: 8}
+        },
+        {
+            code: "async function wrap() { {} await a }",
+            output: "async function wrap() { {}await a }",
+            errors: unexpectedBefore("await"),
+            options: [override("await", NEITHER)],
+            parserOptions: {ecmaVersion: 8}
         },
 
         //----------------------------------------------------------------------

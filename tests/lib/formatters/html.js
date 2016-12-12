@@ -9,9 +9,9 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var assert = require("chai").assert;
-var formatter = require("../../../lib/formatters/html");
-var cheerio = require("cheerio");
+const assert = require("chai").assert;
+const formatter = require("../../../lib/formatters/html");
+const cheerio = require("cheerio");
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -63,10 +63,10 @@ function checkContentRow($, row, args) {
 // Tests
 //------------------------------------------------------------------------------
 
-describe("formatter:html", function() {
-    describe("when passed a single error message", function() {
+describe("formatter:html", () => {
+    describe("when passed a single error message", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -80,9 +80,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-2", problems: "1 problem (1 error, 0 warnings)"});
@@ -95,9 +95,9 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed a single warning message", function() {
+    describe("when passed a single warning message", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 0,
             warningCount: 1,
@@ -111,9 +111,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-1", problems: "1 problem (0 errors, 1 warning)"});
@@ -126,9 +126,9 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed a single error message", function() {
+    describe("when passed a single error message", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -142,9 +142,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-2", problems: "1 problem (1 error, 0 warnings)"});
@@ -157,18 +157,18 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed no error/warning messages", function() {
+    describe("when passed no error/warning messages", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 0,
             warningCount: 0,
             messages: []
         }];
 
-        it("should return a string in HTML format with 0 issues in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 0 issues in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-0", problems: "0 problems"});
@@ -179,8 +179,8 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed multiple messages", function() {
-        var code = [{
+    describe("when passed multiple messages", () => {
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 1,
@@ -201,9 +201,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 2 issues in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 2 issues in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-2", problems: "2 problems (1 error, 1 warning)"});
@@ -217,8 +217,8 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed multiple files with 1 error & warning message respectively", function() {
-        var code = [{
+    describe("when passed multiple files with 1 error & warning message respectively", () => {
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -244,9 +244,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 2 issues in 2 files and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 2 issues in 2 files and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-2", problems: "2 problems (1 error, 1 warning)"});
@@ -261,8 +261,8 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passed multiple files with 1 warning message each", function() {
-        var code = [{
+    describe("when passed multiple files with 1 warning message each", () => {
+        const code = [{
             filePath: "foo.js",
             errorCount: 0,
             warningCount: 1,
@@ -288,9 +288,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 2 issues in 2 files and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 2 issues in 2 files and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             // Check overview
             checkOverview($, {bgColor: "bg-1", problems: "2 problems (0 errors, 2 warnings)"});
@@ -305,9 +305,9 @@ describe("formatter:html", function() {
         });
     });
 
-    describe("when passing a single message with illegal characters", function() {
+    describe("when passing a single message with illegal characters", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -321,9 +321,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             checkContentRow($, $("tr")[1], {group: "f-0", lineCol: "5:10", color: "clr-2", message: "Unexpected &lt;&amp;&quot;&apos;&gt; foo.", ruleId: "foo"});
         });
@@ -351,8 +351,8 @@ describe("formatter:html", function() {
     // });
     // */
 
-    describe("when passing a single message with no rule id or message", function() {
-        var code = [{
+    describe("when passing a single message with no rule id or message", () => {
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -363,17 +363,17 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             checkContentRow($, $("tr")[1], {group: "f-0", lineCol: "5:10", color: "clr-2", message: "", ruleId: ""});
         });
     });
 
-    describe("when passed a single message with no line or column", function() {
+    describe("when passed a single message with no line or column", () => {
 
-        var code = [{
+        const code = [{
             filePath: "foo.js",
             errorCount: 1,
             warningCount: 0,
@@ -385,9 +385,9 @@ describe("formatter:html", function() {
             }]
         }];
 
-        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", function() {
-            var result = formatter(code);
-            var $ = cheerio.load(result);
+        it("should return a string in HTML format with 1 issue in 1 file and styled accordingly", () => {
+            const result = formatter(code);
+            const $ = cheerio.load(result);
 
             checkContentRow($, $("tr")[1], {group: "f-0", lineCol: "0:0", color: "clr-2", message: "Unexpected foo.", ruleId: "foo"});
         });

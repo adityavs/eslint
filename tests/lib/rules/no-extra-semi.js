@@ -9,14 +9,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-extra-semi"),
+const rule = require("../../../lib/rules/no-extra-semi"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("no-extra-semi", rule, {
     valid: [
@@ -27,6 +27,10 @@ ruleTester.run("no-extra-semi", rule, {
         "do;while(0);",
         "for(a in b);",
         { code: "for(a of b);", parserOptions: { ecmaVersion: 6 } },
+        "if(true);",
+        "if(true); else;",
+        "foo: ;",
+        "with(foo);",
 
         // Class body.
         {code: "class A { }", parserOptions: { ecmaVersion: 6 }},
@@ -75,6 +79,36 @@ ruleTester.run("no-extra-semi", rule, {
             parserOptions: { ecmaVersion: 6 },
             errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
             output: "for(a of b);"
+        },
+        {
+            code: "if(true);;",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "if(true);"
+        },
+        {
+            code: "if(true){} else;;",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "if(true){} else;"
+        },
+        {
+            code: "if(true){;} else {;}",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }, { message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "if(true){} else {}"
+        },
+        {
+            code: "foo:;;",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "foo:;"
+        },
+        {
+            code: "with(foo);;",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "with(foo);"
+        },
+        {
+            code: "with(foo){;}",
+            errors: [{ message: "Unnecessary semicolon.", type: "EmptyStatement" }],
+            output: "with(foo){}"
         },
 
         // Class body.

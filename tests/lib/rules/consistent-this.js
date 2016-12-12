@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-var rule = require("../../../lib/rules/consistent-this"),
+const rule = require("../../../lib/rules/consistent-this"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
@@ -18,12 +18,12 @@ var rule = require("../../../lib/rules/consistent-this"),
 /**
  * A destructuring Test
  * @param {string} code source code
- * @returns {object} Suitable object
+ * @returns {Object} Suitable object
  * @private
  */
 function destructuringTest(code) {
     return {
-        code: code,
+        code,
         options: ["self"],
         env: { es6: true },
         parserOptions: { ecmaVersion: 6 }
@@ -34,7 +34,7 @@ function destructuringTest(code) {
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("consistent-this", rule, {
     valid: [

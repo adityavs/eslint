@@ -1,6 +1,7 @@
 /**
  * @fileoverview Tests for no-spaced-func rule.
  * @author Matt DuVall <http://www.mattduvall.com>
+ * @deprecated in ESLint v3.3.0
  */
 
 "use strict";
@@ -9,14 +10,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-spaced-func"),
+const rule = require("../../../lib/rules/no-spaced-func"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("no-spaced-func", rule, {
     valid: [

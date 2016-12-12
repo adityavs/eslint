@@ -8,7 +8,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var path = require("path"),
+const path = require("path"),
     assert = require("chai").assert,
     leche = require("leche"),
     ModuleResolver = require("../../../lib/util/module-resolver");
@@ -17,15 +17,15 @@ var path = require("path"),
 // Data
 //------------------------------------------------------------------------------
 
-var FIXTURES_PATH = path.resolve(__dirname, "../../fixtures/module-resolver");
+const FIXTURES_PATH = path.resolve(__dirname, "../../fixtures/module-resolver");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-describe("ModuleResolver", function() {
+describe("ModuleResolver", () => {
 
-    describe("resolve()", function() {
+    describe("resolve()", () => {
 
         leche.withData([
 
@@ -35,9 +35,9 @@ describe("ModuleResolver", function() {
             // resolve with a different location
             [ "foo", path.resolve(FIXTURES_PATH, "node_modules"), path.resolve(FIXTURES_PATH, "node_modules/foo.js")]
 
-        ], function(name, lookupPath, expected) {
-            it("should find the correct location of a file", function() {
-                var resolver = new ModuleResolver(),
+        ], (name, lookupPath, expected) => {
+            it("should find the correct location of a file", () => {
+                const resolver = new ModuleResolver(),
                     result = resolver.resolve(name, lookupPath);
 
                 assert.equal(result, expected);

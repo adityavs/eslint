@@ -8,14 +8,14 @@
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
-var rule = require("../../../lib/rules/consistent-return"),
+const rule = require("../../../lib/rules/consistent-return"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("consistent-return", rule, {
 

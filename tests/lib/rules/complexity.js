@@ -9,7 +9,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/complexity"),
+const rule = require("../../../lib/rules/complexity"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
@@ -23,10 +23,10 @@ var rule = require("../../../lib/rules/complexity"),
  * @private
  */
 function createComplexity(complexity) {
-    var funcString = "function test (a) { if (a === 1) {";
+    let funcString = "function test (a) { if (a === 1) {";
 
-    for (var i = 2; i < complexity; i++) {
-        funcString += "} else if (a === " + i + ") {";
+    for (let i = 2; i < complexity; i++) {
+        funcString += `} else if (a === ${i}) {`;
     }
 
     funcString += "} };";
@@ -34,7 +34,7 @@ function createComplexity(complexity) {
     return funcString;
 }
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("complexity", rule, {
     valid: [

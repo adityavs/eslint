@@ -9,15 +9,15 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-loop-func"),
+const rule = require("../../../lib/rules/no-loop-func"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester(),
-    expectedErrorMessage = "Don't make functions within a loop";
+const ruleTester = new RuleTester(),
+    expectedErrorMessage = "Don't make functions within a loop.";
 
 ruleTester.run("no-loop-func", rule, {
     valid: [

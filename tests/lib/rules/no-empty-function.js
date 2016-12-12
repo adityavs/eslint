@@ -9,14 +9,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-empty-function"),
+const rule = require("../../../lib/rules/no-empty-function"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Helpers
 //------------------------------------------------------------------------------
 
-var ALLOW_OPTIONS = Object.freeze([
+const ALLOW_OPTIONS = Object.freeze([
     "functions",
     "arrowFunctions",
     "generatorFunctions",
@@ -52,7 +52,7 @@ function toValidInvalid(patterns, item) {
             parserOptions: {ecmaVersion: 6}
         },
         {
-            code: item.code + " // allow: " + item.allow,
+            code: `${item.code} // allow: ${item.allow}`,
             options: [{allow: [item.allow]}],
             parserOptions: {ecmaVersion: 6}
         }
@@ -65,14 +65,12 @@ function toValidInvalid(patterns, item) {
         parserOptions: {ecmaVersion: 6}
     });
     ALLOW_OPTIONS
-        .filter(function(allow) {
-            return allow !== item.allow;
-        })
-        .forEach(function(allow) {
+        .filter(allow => allow !== item.allow)
+        .forEach(allow => {
 
             // non related "allow" option has no effect.
             patterns.invalid.push({
-                code: item.code + " // allow: " + allow,
+                code: `${item.code} // allow: ${allow}`,
                 errors: [item.message],
                 options: [{allow: [allow]}],
                 parserOptions: {ecmaVersion: 6}
@@ -86,7 +84,7 @@ function toValidInvalid(patterns, item) {
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("no-empty-function", rule, [
     {

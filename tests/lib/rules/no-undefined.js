@@ -9,16 +9,16 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-undefined"),
+const rule = require("../../../lib/rules/no-undefined"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var errors = [{ message: "Unexpected use of undefined.", type: "Identifier"}];
+const errors = [{ message: "Unexpected use of undefined.", type: "Identifier"}];
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("no-undefined", rule, {
     valid: [
@@ -34,14 +34,14 @@ ruleTester.run("no-undefined", rule, {
         "global['undefined']"
     ],
     invalid: [
-        { code: "undefined", errors: errors },
-        { code: "undefined.a", errors: errors },
-        { code: "a[undefined]", errors: errors },
-        { code: "undefined[0]", errors: errors },
-        { code: "f(undefined)", errors: errors },
-        { code: "function f(undefined) {}", errors: errors },
-        { code: "var undefined;", errors: errors },
-        { code: "try {} catch(undefined) {}", errors: errors },
-        { code: "(function undefined(){}())", errors: errors }
+        { code: "undefined", errors },
+        { code: "undefined.a", errors },
+        { code: "a[undefined]", errors },
+        { code: "undefined[0]", errors },
+        { code: "f(undefined)", errors },
+        { code: "function f(undefined) {}", errors },
+        { code: "var undefined;", errors },
+        { code: "try {} catch(undefined) {}", errors },
+        { code: "(function undefined(){}())", errors }
     ]
 });

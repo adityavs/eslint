@@ -8,14 +8,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/no-inline-comments"),
+const rule = require("../../../lib/rules/no-inline-comments"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester(),
+const ruleTester = new RuleTester(),
     lineError = {
         messsage: "Unexpected comment inline with code.",
         type: "Line"

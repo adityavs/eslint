@@ -9,10 +9,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/array-callback-return"),
+const rule = require("../../../lib/rules/array-callback-return"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("array-callback-return", rule, {
     valid: [
@@ -41,7 +41,10 @@ ruleTester.run("array-callback-return", rule, {
         "foo.every(function() { try { bar(); } finally { return true; } })",
         "foo.every(function(){}())",
         "foo.every(function(){ return function() { return true; }; }())",
-        "foo.every(function(){ return function() { return; }; })"
+        "foo.every(function(){ return function() { return; }; })",
+        {code: "foo.map(async function(){})", parserOptions: { ecmaVersion: 8 }},
+        {code: "foo.map(async () => {})", parserOptions: { ecmaVersion: 8 }},
+        {code: "foo.map(function* () {})", parserOptions: { ecmaVersion: 6 }}
     ],
     invalid: [
         {code: "Array.from(x, function() {})", errors: ["Expected to return a value in this function."]},

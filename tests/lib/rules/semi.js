@@ -9,10 +9,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/semi"),
+const rule = require("../../../lib/rules/semi"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("semi", rule, {
     valid: [
@@ -90,7 +90,9 @@ ruleTester.run("semi", rule, {
         { code: "export default foo || bar", options: ["never"], parserOptions: { sourceType: "module" } },
         { code: "export default (foo) => foo.bar()", options: ["never"], parserOptions: { sourceType: "module" } },
         { code: "export default foo = 42", options: ["never"], parserOptions: { sourceType: "module" } },
-        { code: "export default foo += 42", options: ["never"], parserOptions: { sourceType: "module" } }
+        { code: "export default foo += 42", options: ["never"], parserOptions: { sourceType: "module" } },
+        { code: "++\nfoo;", options: ["always"] },
+        { code: "var a = b;\n+ c", options: ["never"] }
 
     ],
     invalid: [
@@ -163,6 +165,7 @@ ruleTester.run("semi", rule, {
         { code: "export default foo || bar;", output: "export default foo || bar", options: ["never"], parserOptions: { sourceType: "module" }, errors: [{ message: "Extra semicolon.", type: "ExportDefaultDeclaration" }] },
         { code: "export default (foo) => foo.bar();", output: "export default (foo) => foo.bar()", options: ["never"], parserOptions: { sourceType: "module" }, errors: [{ message: "Extra semicolon.", type: "ExportDefaultDeclaration" }] },
         { code: "export default foo = 42;", output: "export default foo = 42", options: ["never"], parserOptions: { sourceType: "module" }, errors: [{ message: "Extra semicolon.", type: "ExportDefaultDeclaration" }] },
-        { code: "export default foo += 42;", output: "export default foo += 42", options: ["never"], parserOptions: { sourceType: "module" }, errors: [{ message: "Extra semicolon.", type: "ExportDefaultDeclaration" }] }
+        { code: "export default foo += 42;", output: "export default foo += 42", options: ["never"], parserOptions: { sourceType: "module" }, errors: [{ message: "Extra semicolon.", type: "ExportDefaultDeclaration" }] },
+        { code: "a;\n++b", output: "a\n++b", options: ["never"], errors: [{ message: "Extra semicolon." }] }
     ]
 });

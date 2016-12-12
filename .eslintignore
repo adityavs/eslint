@@ -1,6 +1,4 @@
-/bin/**
 /build/**
-/conf/**
 /coverage/**
 /docs/**
 /jsdoc/**

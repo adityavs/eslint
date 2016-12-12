@@ -9,14 +9,14 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/padded-blocks"),
+const rule = require("../../../lib/rules/padded-blocks"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-var ruleTester = new RuleTester(),
+const ruleTester = new RuleTester(),
     ALWAYS_MESSAGE = "Block must be padded by blank lines.",
     NEVER_MESSAGE = "Block must not be padded by blank lines.";
 
@@ -76,6 +76,7 @@ ruleTester.run("padded-blocks", rule, {
     invalid: [
         {
             code: "{\n//comment\na();\n\n}",
+            output: "{\n\n//comment\na();\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -86,6 +87,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\na();\n//comment\n}",
+            output: "{\n\na();\n//comment\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -96,6 +98,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\na()\n//comment\n}",
+            output: "{\n\na()\n//comment\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -106,6 +109,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\na();\n\n}",
+            output: "{\n\na();\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -115,6 +119,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\na();\n}",
+            output: "{\n\na();\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -124,6 +129,21 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\na();\n}",
+            output: "{\n\na();\n\n}",
+            errors: [
+                {
+                    message: ALWAYS_MESSAGE,
+                    line: 1
+                },
+                {
+                    message: ALWAYS_MESSAGE,
+                    line: 3
+                }
+            ]
+        },
+        {
+            code: "{\r\na();\r\n}",
+            output: "{\n\r\na();\r\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -137,6 +157,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\na();}",
+            output: "{\n\na();\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -150,6 +171,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{a();\n}",
+            output: "{\na();\n\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -163,6 +185,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{a();\n}",
+            output: "{\na();\n\n}",
             options: [{blocks: "always"}],
             errors: [
                 {
@@ -177,6 +200,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "switch (a) {\ncase 0: foo();\ncase 1: bar();\n}",
+            output: "switch (a) {\n\ncase 0: foo();\ncase 1: bar();\n\n}",
             options: [{switches: "always"}],
             errors: [
                 {
@@ -193,6 +217,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "switch (a) {\n//comment\ncase 0: foo();//comment\n}",
+            output: "switch (a) {\n\n//comment\ncase 0: foo();//comment\n\n}",
             options: [{switches: "always"}],
             errors: [
                 {
@@ -209,6 +234,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "class A {\nconstructor(){}\n}",
+            output: "class A {\n\nconstructor(){}\n\n}",
             parserOptions: { ecmaVersion: 6 },
             options: [{classes: "always"}],
             errors: [
@@ -226,6 +252,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{a();}",
+            output: "{\na();\n}",
             errors: [
                 {
                     message: ALWAYS_MESSAGE,
@@ -239,6 +266,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\na()\n//comment\n\n}",
+            output: "{\na()\n//comment\n}",
             options: ["never"],
             errors: [
                 {
@@ -249,6 +277,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\na();\n\n}",
+            output: "{\na();\n}",
             options: ["never"],
             errors: [
                 {
@@ -262,7 +291,23 @@ ruleTester.run("padded-blocks", rule, {
             ]
         },
         {
-            code: "{\n\n\na();\n\n\n}",
+            code: "{\r\n\r\na();\r\n\r\n}",
+            output: "{\na();\n}",
+            options: ["never"],
+            errors: [
+                {
+                    message: NEVER_MESSAGE,
+                    line: 1
+                },
+                {
+                    message: NEVER_MESSAGE,
+                    line: 5
+                }
+            ]
+        },
+        {
+            code: "{\n\n\n  a();\n\n\n}",
+            output: "{\n  a();\n}",
             options: ["never"],
             errors: [
                 {
@@ -277,6 +322,18 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\na();\n}",
+            output: "{\na();\n}",
+            options: ["never"],
+            errors: [
+                {
+                    message: NEVER_MESSAGE,
+                    line: 1
+                }
+            ]
+        },
+        {
+            code: "{\n\n\ta();\n}",
+            output: "{\n\ta();\n}",
             options: ["never"],
             errors: [
                 {
@@ -287,6 +344,18 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\na();\n\n}",
+            output: "{\na();\n}",
+            options: ["never"],
+            errors: [
+                {
+                    message: NEVER_MESSAGE,
+                    line: 4
+                }
+            ]
+        },
+        {
+            code: "  {\n    a();\n\n  }",
+            output: "  {\n    a();\n  }",
             options: ["never"],
             errors: [
                 {
@@ -297,6 +366,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n// comment\nif (\n// comment\n a) {}\n\n}",
+            output: "{\n\n// comment\nif (\n// comment\n a) {}\n\n}",
             options: ["always"],
             errors: [
                 {
@@ -308,6 +378,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\n// comment\nif (\n// comment\n a) {}\n}",
+            output: "{\n// comment\nif (\n// comment\n a) {}\n}",
             options: ["never"],
             errors: [
                 {
@@ -319,6 +390,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "{\n\n// comment\nif (\n// comment\n a) {}\n}",
+            output: "{\n// comment\nif (\n// comment\n a) {}\n}",
             options: [{blocks: "never"}],
             errors: [
                 {
@@ -330,6 +402,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "switch (a) {\n\ncase 0: foo();\n}",
+            output: "switch (a) {\ncase 0: foo();\n}",
             options: [{switches: "never"}],
             errors: [
                 {
@@ -341,6 +414,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "switch (a) {\ncase 0: foo();\n\n  }",
+            output: "switch (a) {\ncase 0: foo();\n  }",
             options: [{switches: "never"}],
             errors: [
                 {
@@ -352,6 +426,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "class A {\n\nconstructor(){\n\nfoo();\n\n}\n\n}",
+            output: "class A {\nconstructor(){\n\nfoo();\n\n}\n}",
             parserOptions: { ecmaVersion: 6 },
             options: [{classes: "never"}],
             errors: [
@@ -367,6 +442,7 @@ ruleTester.run("padded-blocks", rule, {
         },
         {
             code: "class A {\n\nconstructor(){\n\nfoo();\n\n}\n\n}",
+            output: "class A {\nconstructor(){\nfoo();\n}\n}",
             parserOptions: { ecmaVersion: 6 },
             options: [{blocks: "never", classes: "never"}],
             errors: [

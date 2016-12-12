@@ -9,10 +9,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/strict"),
+const rule = require("../../../lib/rules/strict"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("strict", rule, {
     valid: [
@@ -67,6 +67,11 @@ ruleTester.run("strict", rule, {
             parserOptions: { ecmaVersion: 6 },
             options: ["function"]
         },
+        {
+            code: "(function() { 'use strict'; function foo(a = 0) { } }())",
+            parserOptions: {ecmaVersion: 6},
+            options: ["function"]
+        },
 
 
         // "safe" mode corresponds to "global" if ecmaFeatures.globalReturn is true, otherwise "function"
@@ -118,6 +123,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "\"use strict\"; foo();",
+            output: " foo();",
             options: ["never"],
             parserOptions: { sourceType: "module" },
             errors: [
@@ -125,6 +131,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["never"],
             parserOptions: { ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -133,6 +140,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["never"],
             parserOptions: { sourceType: "module", ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -184,12 +192,14 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; 'use strict'; foo();",
+            output: "'use strict';  foo();",
             options: ["global"],
             errors: [
                 { message: "Multiple 'use strict' directives.", type: "ExpressionStatement" }
             ]
         }, {
             code: "'use strict'; foo();",
+            output: " foo();",
             options: ["global"],
             parserOptions: { sourceType: "module" },
             errors: [
@@ -197,6 +207,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["global"],
             parserOptions: { ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -205,6 +216,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["global"],
             parserOptions: { sourceType: "module", ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -228,6 +240,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "(function() { 'use strict'; function f() { 'use strict'; return } return true; }());",
+            output: "(function() { 'use strict'; function f() {  return } return true; }());",
             options: ["function"],
             errors: [
                 { message: "Unnecessary 'use strict' directive.", type: "ExpressionStatement" }
@@ -261,18 +274,21 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "function foo() { 'use strict'; 'use strict'; return; }",
+            output: "function foo() { 'use strict';  return; }",
             options: ["function"],
             errors: [
                 { message: "Multiple 'use strict' directives.", type: "ExpressionStatement" }
             ]
         }, {
             code: "var foo = function() { 'use strict'; 'use strict'; return; }",
+            output: "var foo = function() { 'use strict';  return; }",
             options: ["function"],
             errors: [
                 { message: "Multiple 'use strict' directives.", type: "ExpressionStatement" }
             ]
         }, {
             code: "var foo = function() {  'use strict'; return; }",
+            output: "var foo = function() {   return; }",
             options: ["function"],
             parserOptions: { sourceType: "module" },
             errors: [
@@ -280,6 +296,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["function"],
             parserOptions: { ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -288,6 +305,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["function"],
             parserOptions: { sourceType: "module", ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -320,6 +338,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "function foo() { 'use strict'; return function() { 'use strict'; 'use strict'; return; }; }",
+            output: "function foo() { 'use strict'; return function() {   return; }; }",
             options: ["function"],
             errors: [
                 { message: "Unnecessary 'use strict' directive.", type: "ExpressionStatement" },
@@ -327,6 +346,7 @@ ruleTester.run("strict", rule, {
             ]
         }, {
             code: "var foo = function() { 'use strict'; function bar() { 'use strict'; 'use strict'; return; } }",
+            output: "var foo = function() { 'use strict'; function bar() {   return; } }",
             options: ["function"],
             errors: [
                 { message: "Unnecessary 'use strict' directive.", type: "ExpressionStatement" },
@@ -343,18 +363,21 @@ ruleTester.run("strict", rule, {
         // Classes
         {
             code: "class A { constructor() { \"use strict\"; } }",
+            output: "class A { constructor() {  } }",
             parserOptions: { ecmaVersion: 6 },
             options: ["function"],
             errors: [{ message: "'use strict' is unnecessary inside of classes.", type: "ExpressionStatement"}]
         },
         {
             code: "class A { foo() { \"use strict\"; } }",
+            output: "class A { foo() {  } }",
             parserOptions: { ecmaVersion: 6 },
             options: ["function"],
             errors: [{ message: "'use strict' is unnecessary inside of classes.", type: "ExpressionStatement"}]
         },
         {
             code: "class A { foo() { function bar() { \"use strict\"; } } }",
+            output: "class A { foo() { function bar() {  } } }",
             parserOptions: { ecmaVersion: 6 },
             options: ["function"],
             errors: [{ message: "'use strict' is unnecessary inside of classes.", type: "ExpressionStatement"}]
@@ -381,6 +404,7 @@ ruleTester.run("strict", rule, {
         },
         {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["safe"],
             parserOptions: { ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -390,6 +414,7 @@ ruleTester.run("strict", rule, {
         },
         {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             options: ["safe"],
             parserOptions: { sourceType: "module", ecmaFeatures: { impliedStrict: true } },
             errors: [
@@ -420,6 +445,7 @@ ruleTester.run("strict", rule, {
         },
         {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             parserOptions: { ecmaFeatures: { impliedStrict: true } },
             errors: [
                 { message: "'use strict' is unnecessary when implied strict mode is enabled.", type: "ExpressionStatement" },
@@ -428,11 +454,86 @@ ruleTester.run("strict", rule, {
         },
         {
             code: "'use strict'; function foo() { 'use strict'; return; }",
+            output: " function foo() {  return; }",
             parserOptions: { sourceType: "module", ecmaFeatures: { impliedStrict: true } },
             errors: [
                 { message: "'use strict' is unnecessary inside of modules.", type: "ExpressionStatement" },
                 { message: "'use strict' is unnecessary inside of modules.", type: "ExpressionStatement" }
             ]
+        },
+
+        // Reports deprecated syntax: https://github.com/eslint/eslint/issues/6405
+        {
+            code: "function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6},
+            options: [],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "(function() { 'use strict'; function foo(a = 0) { 'use strict' } }())",
+            parserOptions: {ecmaVersion: 6},
+            options: [],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6, ecmaFeatures: {globalReturn: true}},
+            options: [],
+            errors: [
+                "Use the global form of 'use strict'.",
+                "'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."
+            ]
+        },
+        {
+            code: "'use strict'; function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6, ecmaFeatures: {globalReturn: true}},
+            options: [],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6},
+            options: ["never"],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6},
+            options: ["global"],
+            errors: [
+                "Use the global form of 'use strict'.",
+                "'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."
+            ]
+        },
+        {
+            code: "'use strict'; function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6},
+            options: ["global"],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "function foo(a = 0) { 'use strict' }",
+            parserOptions: {ecmaVersion: 6},
+            options: ["function"],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "(function() { 'use strict'; function foo(a = 0) { 'use strict' } }())",
+            parserOptions: {ecmaVersion: 6},
+            options: ["function"],
+            errors: ["'use strict' directive inside a function with non-simple parameter list throws a syntax error since ES2016."]
+        },
+        {
+            code: "function foo(a = 0) { }",
+            parserOptions: {ecmaVersion: 6},
+            options: ["function"],
+            errors: ["Wrap this function in a function with 'use strict' directive."]
+        },
+        {
+            code: "(function() { function foo(a = 0) { } }())",
+            parserOptions: {ecmaVersion: 6},
+            options: ["function"],
+            errors: ["Use the function form of 'use strict'."]
         }
 
     ]

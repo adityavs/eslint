@@ -9,10 +9,10 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-var rule = require("../../../lib/rules/quotes"),
+const rule = require("../../../lib/rules/quotes"),
     RuleTester = require("../../../lib/testers/rule-tester");
 
-var ruleTester = new RuleTester();
+const ruleTester = new RuleTester();
 
 ruleTester.run("quotes", rule, {
     valid: [
@@ -38,6 +38,16 @@ ruleTester.run("quotes", rule, {
 
         // Backticks are only okay if they have substitutions, contain a line break, or are tagged
         { code: "var foo = `back\ntick`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
+        { code: "var foo = `back\rtick`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
+        { code: "var foo = `back\u2028tick`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
+        { code: "var foo = `back\u2029tick`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
+        {
+            code: "var foo = `back\\\\\ntick`;", // 2 backslashes followed by a newline
+            options: ["single"],
+            parserOptions: { ecmaVersion: 6 }
+        },
+        { code: "var foo = `back\\\\\\\\\ntick`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
+        { code: "var foo = `\n`;", options: ["single"], parserOptions: { ecmaVersion: 6 }},
         { code: "var foo = `back${x}tick`;", options: ["double"], parserOptions: { ecmaVersion: 6 }},
         { code: "var foo = tag`backtick`;", options: ["double"], parserOptions: { ecmaVersion: 6 }},
 
@@ -205,6 +215,93 @@ ruleTester.run("quotes", rule, {
                 { message: "Strings must use backtick.", type: "Literal" },
                 { message: "Strings must use backtick.", type: "Literal" }
             ]
+        },
+
+        // https://github.com/eslint/eslint/issues/7084
+        {
+            code: "<div blah={\"blah\"} />",
+            output: "<div blah={'blah'} />",
+            options: ["single"],
+            parserOptions: { ecmaFeatures: {jsx: true} },
+            errors: [
+                { message: "Strings must use singlequote.", type: "Literal" },
+            ],
+        },
+        {
+            code: "<div blah={'blah'} />",
+            output: "<div blah={\"blah\"} />",
+            options: ["double"],
+            parserOptions: { ecmaFeatures: {jsx: true} },
+            errors: [
+                { message: "Strings must use doublequote.", type: "Literal" },
+            ],
+        },
+        {
+            code: "<div blah={'blah'} />",
+            output: "<div blah={`blah`} />",
+            options: ["backtick"],
+            parserOptions: { ecmaFeatures: {jsx: true} },
+            errors: [
+                { message: "Strings must use backtick.", type: "Literal" },
+            ],
+        },
+
+        // https://github.com/eslint/eslint/issues/7610
+        {
+            code: "`use strict`;",
+            output: "`use strict`;",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "function foo() { `use strict`; foo(); }",
+            output: "function foo() { `use strict`; foo(); }",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "foo = function() { `use strict`; foo(); }",
+            output: "foo = function() { `use strict`; foo(); }",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "() => { `use strict`; foo(); }",
+            output: "() => { `use strict`; foo(); }",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "() => { foo(); `use strict`; }",
+            output: "() => { foo(); \"use strict\"; }",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "foo(); `use strict`;",
+            output: "foo(); \"use strict\";",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+
+        // https://github.com/eslint/eslint/issues/7646
+        {
+            code: "var foo = `foo\\nbar`;",
+            output: "var foo = \"foo\\nbar\";",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "var foo = `foo\\\nbar`;", // 1 backslash followed by a newline
+            output: "var foo = \"foo\\\nbar\";",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
+        },
+        {
+            code: "var foo = `foo\\\\\\\nbar`;", // 3 backslashes followed by a newline
+            output: "var foo = \"foo\\\\\\\nbar\";",
+            parserOptions: { ecmaVersion: 6 },
+            errors: [{ message: "Strings must use doublequote.", type: "TemplateLiteral" }]
         }
     ]
 });
